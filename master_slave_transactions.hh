@@ -1,7 +1,7 @@
 #ifndef MASTER_SLAVE_TRANSACTIONS
 #define MASTER_SLAVE_TRANSACTIONS
 
-#include "aux.hh"
+#include "_aux.hh"
 #include "rsa.hh"
 
 //using namespace std;

@@ -1,7 +1,7 @@
 #ifndef RSA_GEN_KEYS_HH
 #define RSA_GEN_KEYS_HH
 
-#include "aux.hh"
+#include "_aux.hh"
 #include "prime.hh"
 
 //using namespace std;

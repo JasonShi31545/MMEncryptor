@@ -1,7 +1,7 @@
 #ifndef RIPEMD256_HH
 #define RIPEMD256_HH
 
-#include "aux.hh"
+#include "_aux.hh"
 
 #include "cryptlib.h"
 #include "sha.h"

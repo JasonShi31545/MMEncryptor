@@ -1,7 +1,7 @@
 #ifndef SHA256_HH
 #define SHA256_HH
 
-#include "aux.hh"
+#include "_aux.hh"
 
 #include "cryptlib.h"
 #include "sha.h"

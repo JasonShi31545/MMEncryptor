@@ -1,6 +1,6 @@
 #ifndef FAST_MODULAR_EXP_HH
 #define FAST_MODULAR_EXP_HH
-#include "aux.hh"
+#include "_aux.hh"
 
 using namespace boost::multiprecision;
 using namespace boost::random;

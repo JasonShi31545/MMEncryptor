@@ -1,7 +1,7 @@
 #ifndef OTP_HH
 #define OTP_HH
 
-#include "aux.hh"
+#include "_aux.hh"
 //#include <bits/stdc++.h>
 //using namespace std;
 

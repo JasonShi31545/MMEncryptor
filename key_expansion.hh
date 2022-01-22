@@ -1,7 +1,7 @@
 #ifndef KEY_EXPANSION_HH
 #define KEY_EXPANSION_HH
 
-#include "aux.hh"
+#include "_aux.hh"
 
 #define XOR ^
 

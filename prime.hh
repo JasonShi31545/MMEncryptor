@@ -1,7 +1,7 @@
 #ifndef PRIME_HH
 #define PRIME_HH
 
-#include "aux.hh"
+#include "_aux.hh"
 
 using namespace boost::multiprecision;
 //using namespace std;

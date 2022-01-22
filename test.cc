@@ -7,7 +7,7 @@
 #include "ripemd256.hh"
 #include "master_slave_transactions.hh"
 */
-//#include "aux.hh"
+//#include "_aux.hh"
 
 #include "backend.hh"
 

@@ -1,7 +1,7 @@
 #ifndef GALOIS_FIELD_HH
 #define GALOIS_FIELD_HH
 
-#include "aux.hh"
+#include "_aux.hh"
 
 // ideally int8_t
 const std::vector<std::vector<int>> etable = {
