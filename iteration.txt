@@ -1,0 +1,65 @@
+First, there was nothing
+
+Procedure:
+	Master:
+		Generate RSA keys in memory (RAM)
+		Generate AES keys in memory
+		Generate master ID information
+		(Sign) Encrypt AES keys with private keys (for signature purposes)
+		(Sign) Encrypt master ID information with private keys (for signature purposes)
+		(Unencrypted, only signature) Export the messages into comm.sto (EAES + EMID)
+		Input password
+		Hash the password
+		Write to pass.sto
+		Put the private keys and the AES keys into a string
+		Encrypt with password of that string
+		Put them in a vault (vault.sto, only accessible with password)
+		Put the public key directly (plain-text) into pub.sto
+	
+	Slave:
+		Generate RSA keys in memory (RAM)
+		Input password
+		Hash the password
+		Write to slave_pass.sto
+		Put the private key into a string
+		Encrypt with password of that string
+		Put them in a vault (slave_vault.sto, only accessible with password)
+		Put the public key directly (plain-text) into slave_pub.sto
+
+	Slave: Create opub.key
+	Send it to master via the open internet
+
+	Master receives it
+	
+	Master:
+		Process opub.key into memory, now it has the slave public key to encrypt messages
+		Open the previously created comm.sto, it contains the message (Signed AES key and Signed Master ID Info).
+		Process comm.sto
+		Encrypt (signed) AES key
+		Encrypt (signed) master ID information
+		Clear comm.sto
+		Write the encrypted content to comm.sto (comm.sto is finally encrypted!)
+
+	Master: create mme_aesk.ekey from comm.sto
+	Send it to slave via the open internet, the message is encrypted with slave’s public key so no one would read it, RSA achieved!
+	
+	Master: create master_pub.key from pub.sto
+	Send it to slave via the open internet
+	
+	Slave receives them
+		Store password in memory for further decryption of vaults
+		Ask for the expected master information
+		Process master_pub.key
+		Process mme_aesk.ekey into memory, it contains the encrypted AES key and the master information
+		Read slave_vault.sto, store the encrypted vault in a string
+		Process passwd to an aes key
+		expand key
+		process passwd to an otp key
+		decrypt otp to a string
+		decrypt aes to a string
+		unprocess secrets
+		process the decrypted vault content and split based on “;;;”
+		extract private keys
+		decrypt mme_aesk content
+		write to AES_KEY_important.key
+		

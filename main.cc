@@ -681,8 +681,8 @@ SUCCESS_PW:
             assert(encrypted_vault_content.size() % 16 == 0);
 //            assert(strlen(encrypted_vault_content.c_str()) % 16 == 0);
 
-//            fputs(encrypted_vault_content.c_str(), vault_sto_f);
-            exact_fputs(encrypted_vault_content, vault_sto_f);
+            fputs(encrypted_vault_content.c_str(), vault_sto_f);
+//            exact_fputs(encrypted_vault_content, vault_sto_f);
 
             fputs(export_public_key().c_str(), pub_sto_f);
             
