@@ -4,7 +4,7 @@ default:
 main: main.cc
 	g++ -std=c++17 -Wshadow -Wall -o "main.out" "main.cc" -lgmpxx -lgmp -lboost_system -lboost_thread -lboost_random -g -fsanitize=address -fsanitize=undefined -D_GLIBCXX_DEBUG
 final: main.cc
-	g++ -std=c++17 -Wshadow -Wall -o "mme.out" "main.cc" -O2 -Wno-unused-result -static -lgmpxx -lgmp -lboost_system -lboost_thread -lboost_random -I/opt/ssl/include/ -L/opt/ssl/lib/ -lcrypto -I$(current_dir)/cryptopp860/ -L$(current_dir)/cryptopp860/ -lcryptopp
+	g++                    -std=c++17 -Wshadow -Wall -o "mme.out" "main.cc" -O2 -Wno-unused-result -static -lgmpxx -lgmp -lboost_system -lboost_thread -lboost_random -I/opt/ssl/include/ -L/opt/ssl/lib/ -lcrypto -I$(current_dir)/cryptopp860/ -L$(current_dir)/cryptopp860/ -lcryptopp
 	strip mme.out
 finald: main.cc
 	g++ -std=c++17 -Wshadow -Wall -o "mme.out" "main.cc" -O2 -Wno-unused-result -static -lgmpxx -lgmp -lboost_system -lboost_thread -lboost_random -I/opt/ssl/include/ -L/opt/ssl/lib/ -lcrypto -I$(current_dir)/cryptopp860/ -L$(current_dir)/cryptopp860/ -lcryptopp
