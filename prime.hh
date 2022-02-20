@@ -9,11 +9,12 @@ using namespace boost::random;
 using namespace boost::math;
 
 int _n;
-std::string content; std::vector<int> prime_sieve_list;
+//std::string content;
+std::vector<int> prime_sieve_list;
 
 void init_psl() {
     _n = 4;
-    content = "";
+//    content = ""; // What the fuck is this content crap???
 
     int i = 0;
     while (i < pow(10, _n)) {

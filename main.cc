@@ -57,11 +57,14 @@ void parse_file_boss(string &res, FILE *fff /* f for file */) { // parse file ba
 }
 
 
+/*
+WTF is this???
 void exact_fputs(const string fcontent, FILE *f) {
     for (int i = 0; i < (int)fcontent.size(); i++) {
         fputc(content[i], f);
     }
 }
+*/
 
 namespace PASSWORD_INPUT {
 int getch() {
@@ -142,7 +145,7 @@ string getpass2(bool show_asterisk=true) {
 };
 
 
-extern int errno;
+//extern int errno;
 
 int main(int argc, const char *argv[]) {
 
@@ -361,8 +364,8 @@ SUCCESS_PW:
             parse_file(e_in_str, opub_f);
             parse_file(n_in_str, opub_f);
 
-            e_in_str = clean_up_string(e_in_str);
-            n_in_str = clean_up_string(n_in_str);
+//            e_in_str = clean_up_string(e_in_str);
+//            n_in_str = clean_up_string(n_in_str);
 
             cpp_int public_key_e = boost::lexical_cast<cpp_int>(e_in_str);
             cpp_int public_key_n = boost::lexical_cast<cpp_int>(n_in_str);
@@ -377,7 +380,7 @@ SUCCESS_PW:
             string comm_file_content;
 
             parse_file(comm_file_content, comm_sto_f, false);
-            comm_file_content = clean_up_string(comm_file_content);
+//            comm_file_content = clean_up_string(comm_file_content);
             
             string encrypted_aes_key, encrypted_infos;
             int split_index = -1;
@@ -404,7 +407,7 @@ SUCCESS_PW:
 
             string sum = feak_str + ";;;" + fei_str;
 
-            sum = clean_up_string(sum); // clean up all those \0s
+//            sum = clean_up_string(sum); // clean up all those \0s
 
             fclose(fopen("comm.sto", "w")); // clears the content of the existing comm.sto
             fputs(sum.c_str(), comm_sto_f);
