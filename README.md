@@ -25,3 +25,9 @@ type ```make final``` in the source directory
 
 
 ```mme.out``` or ```mme.exe``` should be compiled and linked in the source directory.
+
+# Other Information
+
+The source code is licensed under the GNU Public License Version 3.
+The license is carried with the source in in the `LICENSE` file.
+Copyright (C) Jason Shi 2021-2022
