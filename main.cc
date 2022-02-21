@@ -170,7 +170,7 @@ int main(int argc, const char *argv[]) {
         std::cout << "-d: Decrypt message provided by a file: [FILE]" << std::endl;
         std::cout << "-i: Info about the current communication based on the directory" << std::endl;
         std::cout << std::endl << std::endl;
-        cout << "Copyright (C) Jason Shi 2021" << endl;
+        cout << "Copyright (C) Jason Shi 2021-2022" << endl;
         cout << "Licensed under GNU GPL v3" << endl;
         cout << "Multimedia Encryptor" << endl << endl;
         return 0;
