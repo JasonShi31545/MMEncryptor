@@ -41,3 +41,5 @@
 *.ekey
 core
 tmp/
+
+github_access_token.txt
