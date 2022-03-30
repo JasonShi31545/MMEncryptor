@@ -93,11 +93,10 @@ int main(void) {
 
     */
 
+    /*
+
     gen_rsa_k();
     cerr << "Gen-ed!" << endl;
-
-
-
 
     init();
     string aesk = "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEF";
@@ -167,9 +166,10 @@ int main(void) {
     cerr << "content: " << content << endl;
     cerr << "stage2 : " << stage2 << endl;
 
+    */
 
 
-
+        cout << int_to_bin((int)'A') << endl;
 
 
     return 0;
