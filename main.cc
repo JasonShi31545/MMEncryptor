@@ -41,6 +41,7 @@ void parse_file_boss(string &res, FILE *fff /* f for file */) { // parse file ba
 //    const int size = (int)res.size();
     fseek(fff, 0, SEEK_END);
     unsigned long size = (unsigned long)ftell(fff);
+    fseek(fff, 0, SEEK_SET);
     assert(size % 16 == 0); // assert that the size of the content in slave_vault.sto is divisible by 16
     while (i < size) {
         char_input = (unsigned char)fgetc(fff);
@@ -501,8 +502,8 @@ SUCCESS_PW:
 
             FILE *sv = fopen("slave_vault.sto", "r");
             string encrypted_vault_content;
-            parse_file(encrypted_vault_content, sv, false);
-//            parse_file_boss(encrypted_vault_content, sv);
+            // parse_file(encrypted_vault_content, sv, false);
+            parse_file_boss(encrypted_vault_content, sv);
 
             cerr << "encrypted vault content size: " << encrypted_vault_content.size() << endl;
             
