@@ -8,7 +8,7 @@ namespace B64 {
         assert(binaryStr.size() == 6);
         int power = 5; // since the most power is 6, the biggest should be 5, or else it would be an off-by-one error
         int result = 0;
-        for (int i = 0; i < binaryStr.size(); i++) {
+        for (int i = 0; i < (int)binaryStr.size(); i++) {
             result += (binaryStr[i] - '0') * (1 << power);
             power--;
         }
@@ -87,7 +87,7 @@ namespace B64 {
         std::string result = "";
         int equalsigns = 0;
         std::string binaries = "";
-        for (int i = 0; i < inputBytes.size(); i++) {
+        for (int i = 0; i < (int)inputBytes.size(); i++) {
             binaries += int_to_bin((int)inputBytes[i]);
         }
         assert(binaries.size() % 8 == 0);
@@ -95,10 +95,10 @@ namespace B64 {
         if (binaries.size() % 6 != 0) {
             equalsigns = (6 - (binaries.size() % 6))/2;
             const int additionalZeros = (6 - (binaries.size() % 6));
-            for (int i = 0; i < additionalZeros; i++) { binaries.push_back('0'); };
+            for (int i = 0; i < (int)additionalZeros; i++) { binaries.push_back('0'); };
         }
         assert(binaries.size() % 6 == 0);
-        for (int i = 0; i < binaries.size() / 6; i++) {
+        for (int i = 0; i < (int)binaries.size() / 6; i++) {
             std::string tmp = "";
             for (int j = 0; j < 6; j++) {
                 tmp.push_back(binaries[i * 6 + j]);
@@ -112,16 +112,16 @@ namespace B64 {
 
     std::string decode64(std::string inputString) { // return the associated data from the base64 string
         int equalsigns = 0;
-        int i = inputString.size() - 1;
-        while (inputString[i] == '=') {
+        int k = inputString.size() - 1;
+        while (inputString[k] == '=') {
             equalsigns++;
-            i--;
+            k--;
         }
         std::string result = "";
         inputString = inputString.substr(0, inputString.size() - equalsigns);
 
         std::string binaries = "";
-        for (int i = 0; i < inputString.size(); i++) {
+        for (int i = 0; i < (int)inputString.size(); i++) {
             binaries += anticharst[inputString[i]];
         }
         for (int i = 0; i < equalsigns; i++) {
@@ -129,7 +129,7 @@ namespace B64 {
         }
         assert(binaries.size() % 8 == 0);
 
-        for (int i = 0; i < binaries.size() / 8; i++) {
+        for (int i = 0; i < (int)binaries.size() / 8; i++) {
             int prechar = bin_to_int(binaries.substr(i*8, 8));
             assert(prechar >= 0 && prechar <= 255);
             result.push_back((char)prechar);
