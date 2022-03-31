@@ -7,6 +7,7 @@
 #include "ripemd256.hh"
 #include "otp.hh"
 #include "master_slave_transactions.hh"
+#include "base64.hh"
 
 
 /*

@@ -38,6 +38,22 @@ int main(void) {
 }
 */
 
+/*
+void testb64(std::string data) {
+    cout << endl;
+    cout << "Raw data size: " << data.size() << endl;
+    std::string base64data = B64::encode64(data);
+    cout << "Base64 data size: " << base64data.size() << endl;
+    cout << base64data << endl;
+    std::string decoded64data = B64::decode64(base64data);
+    cout << decoded64data << endl;
+    cout << data << endl;
+    cout << decoded64data.size() << endl;
+    cout << data.size() << endl;
+    cout << endl;
+}
+*/
+
 int main(void) {
 
 
@@ -169,8 +185,23 @@ int main(void) {
     */
 
 
-        cout << int_to_bin((int)'A') << endl;
+        // cout << int_to_bin((int)'A') << endl;
 
+        /*
+    std::string data1 = "AAAAAAAAAAAAAAAA";
+    std::string data2 = "Arouseoutfromthe Azure main arouse arouse out from the azure main";
+    std::string data3 = "asdf}{P{qerlqkjas,dmfnzQdrqeroiu234";
+    std::string data4 = "Happy Birthday To sfASDfad|}{ Happy Birthday to asdfkaljsdf";
+    std::string data5 = "TestTestTest";
+
+
+    testb64(data1);
+    testb64(data2);
+    testb64(data3);
+    testb64(data4);
+    testb64(data5);
+    */
 
     return 0;
 }
+
