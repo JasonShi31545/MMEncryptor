@@ -11,6 +11,8 @@
 
 #include "backend.hh"
 
+#include "main.hh"
+
 /*
 using namespace boost::multiprecision;
 using namespace boost::random;
@@ -201,6 +203,16 @@ int main(void) {
     testb64(data4);
     testb64(data5);
     */
+
+    /*
+    string license_content = "";
+    FILE *license_file = fopen("LICENSE", "r");
+    license_content = readAllFromFile(license_file);
+    cout << license_content;
+    */
+
+    cpp_int a = 51;
+    cout << (char)a << endl;
 
     return 0;
 }

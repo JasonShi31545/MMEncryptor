@@ -4,58 +4,79 @@
 #include <termios.h>
 #include <unistd.h>
 #include <stdio.h>
+
+#include "main.hh"
 /* The Front-end of my program */
 
-string clean_up_string(string input) {
-    string result = "";
-    for (int i = 0; i < (int)input.size(); i++) {
-        if (input[i] != '\0') {
-            result.push_back(input[i]);
+/*
+void parse_file(string &res, FILE *f_for_file, bool check_for_comma = true, bool b64decode = true) {
+    // assert(res.empty() == true);
+    // string tmpbuffer = "";
+    
+    // unsigned char char_input = 0;
+    // while (true) {
+    //     char_input = (unsigned char)fgetc(f_for_file);
+    //     assert((int)char_input <= 255 && (int)char_input >= 0);
+    //     if (char_input == (unsigned char)EOF) {
+    //         break;
+    //     }
+    //     if (check_for_comma && char_input == (unsigned char)',') {
+    //         break;
+    //     }
+    //     tmpbuffer.push_back((char)char_input);
+    // }
+    // if (b64decode) {
+    //     res = B64::decode64(tmpbuffer);
+    // } else {
+    //     res = tmpbuffer;
+    // }
+    assert(res.empty() == true);
+    string tmpbuffer = "";
+    tmpbuffer = readAllFromFile(f_for_file);
+    if (b64decode == true) {
+        tmpbuffer = B64::decode64(tmpbuffer);
+    }
+    std::string result = "";
+    if (check_for_comma) {
+        int i = 0;
+        while (i < tmpbuffer.size()) {
+            if (tmpbuffer[i] != ',') {
+                result.push_back(tmpbuffer[i]);
+            } else {
+                break;
+            }
+            i++;
         }
-    }
-    if (result.empty()) {
-        cerr << "\"result\" is empty" << endl;
-        return "";
-    }
-    return result;
+    } else { result = tmpbuffer; }
+    res = result;
 }
+*/
 
-void parse_file(string &res, FILE *f_for_file, bool check_for_comma = true) {
-    unsigned char char_input = 0;
-    while (true) {
-        char_input = (unsigned char)fgetc(f_for_file);
-        assert((int)char_input <= 255 && (int)char_input >= 0);
-        if (char_input == (unsigned char)EOF) {
-            break;
-        }
-        if (check_for_comma && char_input == (unsigned char)',') {
-            break;
-        }
-        res.push_back((char)char_input);
-    }
-}
 
-void parse_file_boss(string &res, FILE *fff /* f for file */) { // parse file based on string size
-    unsigned char char_input = 0;
-    unsigned long i = 0;
-//    const int size = (int)res.size();
-    fseek(fff, 0, SEEK_END);
-    unsigned long size = (unsigned long)ftell(fff);
-    fseek(fff, 0, SEEK_SET);
-    assert(size % 16 == 0); // assert that the size of the content in slave_vault.sto is divisible by 16
-    while (i < size) {
-        char_input = (unsigned char)fgetc(fff);
-        assert((int)char_input <= 255 && (int)char_input >= 0);
-        /*
-        if (char_input == (unsigned char)EOF) {
-            break;
-        }
-        */
-        res.push_back((char)char_input);
-        i++;
-    }
-    fseek(fff, 0, SEEK_SET);
-}
+// void parse_file_boss(string &res, FILE *fff /* f for file */) { // parse file based on string size
+//     assert(res.empty() == true);
+//     string tmpbuffer = "";
+//     unsigned char char_input = 0;
+//     unsigned long i = 0;
+// //    const int size = (int)res.size();
+//     fseek(fff, 0, SEEK_END);
+//     unsigned long size = (unsigned long)ftell(fff);
+//     fseek(fff, 0, SEEK_SET);
+//     assert(size % 16 == 0); // assert that the size of the content in slave_vault.sto is divisible by 16
+//     while (i < size) {
+//         char_input = (unsigned char)fgetc(fff);
+//         assert((int)char_input <= 255 && (int)char_input >= 0);
+//         /*
+//         if (char_input == (unsigned char)EOF) {
+//             break;
+//         }
+//         */
+//         tmpbuffer.push_back((char)char_input);
+//         i++;
+//     }
+//     fseek(fff, 0, SEEK_SET);
+//     res = B64::decode64(tmpbuffer);
+// }
 
 
 /*
@@ -204,32 +225,9 @@ int main(int argc, const char *argv[]) {
             string str_aes_key = bin_to_str(aes_key);
             string padded_aes_key = pad_inputs(str_aes_key);
             string padded_id_info = pad_inputs(master_id_info);
-
-            /*
-            cerr << padded_aes_key << endl;
-            cerr << padded_id_info << endl;
- 
-            cerr << "With sizes: " << endl;
-            cerr << padded_aes_key.size() << endl;
-            cerr << padded_id_info.size() << endl;
-            */
             
             std::vector<cpp_int> rsa_encrypted_paesk = encrypt_using_private_key_full(padded_aes_key);
             std::vector<cpp_int> rsa_encrypted_idi = encrypt_using_private_key_full(padded_id_info);
-
-            /*
-            cerr << "() With sizes: " << endl;
-            cerr << rsa_encrypted_paesk.size() << endl;
-            cerr << rsa_encrypted_idi.size() << endl;
-            cerr << "FUCK MY LIFE!" << endl;
-
-            for (int i = 0; i < 10; i++) {
-                cerr << rsa_encrypted_paesk[i] << " " << rsa_encrypted_idi[i] << endl;
-            }
-            cerr << "FUCK MY LIFE AGAIN!" << endl;
-
-            cerr << "done" << endl;
-            */
 
             FILE *comm_sto_f;
             comm_sto_f = fopen("comm.sto", "w+");
@@ -241,11 +239,6 @@ int main(int argc, const char *argv[]) {
             }
 
             string encrypted_info = export_encrypted_message(rsa_encrypted_paesk) + ";;;" + export_encrypted_message(rsa_encrypted_idi);
-
-            /*
-            cerr << "FUCK AGAIN!" << endl;
-            cerr << encrypted_info << endl;
-            */
 
             fputs(encrypted_info.c_str(),comm_sto_f);
 
@@ -288,7 +281,7 @@ SUCCESS_PW:
             // Success for inputting password
             string password = input1;
             string secure_pw_hashed = sha_hash_it(ripemd_hash_it(password));
-            fputs(secure_pw_hashed.c_str(), pass_sto_f);
+            fputs(B64::encode64(secure_pw_hashed).c_str(), pass_sto_f);
 
             string secret = export_private_key() + ";;;" + str_aes_key;
 
@@ -302,10 +295,9 @@ SUCCESS_PW:
             string expanded_secret_otp_key = otp_key_expansion(secret_otp_key, encrypted_secret_content.size());
             string encrypted_vault_content = encrypt_otp(encrypted_secret_content, expanded_secret_otp_key);
 
-            fputs(encrypted_vault_content.c_str(), vault_sto_f);
+            fputs(B64::encode64(encrypted_vault_content).c_str(), vault_sto_f);
 
             fputs(export_public_key().c_str(), pub_sto_f);
-            /* Complete storing files */
 
             // Close files
             fclose(comm_sto_f);
@@ -339,7 +331,8 @@ SUCCESS_PW:
                 return 5;
             }
             string supposed_hash;
-            parse_file(supposed_hash, pass_file, false);
+            // parse_file(supposed_hash, pass_file, false);
+            supposed_hash = B64::decode64(readAllFromFile(pass_file));
             if (supposed_hash == hashed) {
                 cerr << "Verification Successful!" << endl;
             } else {
@@ -362,9 +355,13 @@ SUCCESS_PW:
 
             string e_in_str, n_in_str;
 
-            parse_file(e_in_str, opub_f);
-            parse_file(n_in_str, opub_f);
-
+            pair<string, string> public_key_pair = splitAtComma(readAllFromFile(opub_f));
+            // parse_file(e_in_str, opub_f);
+            e_in_str = public_key_pair.first;
+            // parse_file(n_in_str, opub_f);
+            n_in_str = public_key_pair.second;
+            
+            
 //            e_in_str = clean_up_string(e_in_str);
 //            n_in_str = clean_up_string(n_in_str);
 
@@ -380,7 +377,8 @@ SUCCESS_PW:
             }
             string comm_file_content;
 
-            parse_file(comm_file_content, comm_sto_f, false);
+            // parse_file(comm_file_content, comm_sto_f, false);
+            comm_file_content = readAllFromFile(comm_sto_f);
 //            comm_file_content = clean_up_string(comm_file_content);
             
             string encrypted_aes_key, encrypted_infos;
@@ -411,7 +409,7 @@ SUCCESS_PW:
 //            sum = clean_up_string(sum); // clean up all those \0s
 
             fclose(fopen("comm.sto", "w")); // clears the content of the existing comm.sto
-            fputs(sum.c_str(), comm_sto_f);
+            fputs(B64::encode64(sum).c_str(), comm_sto_f);
             fclose(comm_sto_f);
 
             break;
@@ -432,8 +430,11 @@ SUCCESS_PW:
                 cerr << "Error: Password file does not exist!" << endl;
                 return 5;
             }
+            
             string supposed_hashed_passwd;
-            parse_file(supposed_hashed_passwd, pass_file, false);
+            // parse_file(supposed_hashed_passwd, pass_file, false);
+            supposed_hashed_passwd = B64::decode64(readAllFromFile(pass_file));
+            
             if (supposed_hashed_passwd == hashed) {
                 cerr << "Verification Successful!" << endl;
             } else {
@@ -462,19 +463,23 @@ SUCCESS_PW:
 
             // Interpret master public key from master_pub.key
             string master_e, master_n;
-            parse_file(master_e, master_pubkey);
-            parse_file(master_n, master_pubkey);
-
-            master_e = clean_up_string(master_e);
-            master_n = clean_up_string(master_n);
+            // parse_file(master_e, master_pubkey);
+            pair<string, string> master_public_key_pair = splitAtComma(readAllFromFile(master_pubkey));
+            master_e = master_public_key_pair.first;
+            // parse_file(master_n, master_pubkey);
+            master_n = master_public_key_pair.second;
+            
+            // master_e = clean_up_string(master_e);
+            // master_n = clean_up_string(master_n);
 
             cpp_int master_key_e = boost::lexical_cast<cpp_int>(master_e);
             cpp_int master_key_n = boost::lexical_cast<cpp_int>(master_n);
 
             // Parse the received communication message mme_aesk.ekey
             string pure_content;
-            parse_file(pure_content, ekey, false);
-            pure_content = clean_up_string(pure_content);
+            // parse_file(pure_content, ekey, false);
+            pure_content = readAllFromFile(ekey);
+            // pure_content = clean_up_string(pure_content);
 
             std::vector<cpp_int> encrypted_aes_key, encrypted_id_info;
             string aesContent, idInfoContent;
@@ -503,32 +508,33 @@ SUCCESS_PW:
             FILE *sv = fopen("slave_vault.sto", "r");
             string encrypted_vault_content;
             // parse_file(encrypted_vault_content, sv, false);
-            parse_file_boss(encrypted_vault_content, sv);
+            //            parse_file_boss(encrypted_vault_content, sv);
+            encrypted_vault_content = B64::decode64(readAllFromFile(sv));
 
-            cerr << "encrypted vault content size: " << encrypted_vault_content.size() << endl;
+//            cerr << "encrypted vault content size: " << encrypted_vault_content.size() << endl;
             
-            cerr << "Uno" << endl;
+//            cerr << "Uno" << endl;
             // plaintext password is input1
 
             string aes_key = sha_hash_it(sha3_hash_it(input1));
             bitset<32 * BYTE_SIZE> akbin = str_to_bin(aes_key);
             string exp_ak = expand_key(akbin); // expanded aes key
 
-            cerr << "Dos" << endl;
+//            cerr << "Dos" << endl;
             
             string otp_key = sha_hash_it(input1);
             string expanded_otpk = otp_key_expansion(otp_key, encrypted_vault_content.size()); // expanded otp key
 
-            cerr << "Tres" << endl;
+//            cerr << "Tres" << endl;
             
             string stage1 = decrypt_otp(encrypted_vault_content, expanded_otpk);
 
-            cerr << "Tres y medio" << endl;
+//            cerr << "Tres y medio" << endl;
 
-            cerr << "Stage 1 size: " << stage1.size() << endl;
+//            cerr << "Stage 1 size: " << stage1.size() << endl;
 
             string stage2 = decrypt_full(stage1, exp_ak);
-            cerr << "cuadro" << endl;
+//            cerr << "cuadro" << endl;
 
             string private_keys = "";
             for (int i = 0; i < (int)stage2.size() - 3; i++) {
@@ -539,7 +545,7 @@ SUCCESS_PW:
                 }
             }
 
-            cerr << "cinco" << endl;
+//            cerr << "cinco" << endl;
 
             string kd, kn;
             int break_id = -404;
@@ -555,23 +561,23 @@ SUCCESS_PW:
             }
 
 
-	    cerr << "Pure KD: " << kd << endl;
-	    cerr << "Pure KN: " << kn << endl;
+//	    cerr << "Pure KD: " << kd << endl;
+//	    cerr << "Pure KN: " << kn << endl;
 
-            cerr << "seis" << endl;
+//            cerr << "seis" << endl;
 
-            kd = clean_up_string(kd);
-            kn = clean_up_string(kn);
+//            kd = clean_up_string(kd);
+//            kn = clean_up_string(kn);
 
-            cerr << "KD: " << kd << endl;
-            cerr << "KN: " << kn << endl;
+//            cerr << "KD: " << kd << endl;
+//            cerr << "KN: " << kn << endl;
 
-            cerr << "siete" << endl;
+//            cerr << "siete" << endl;
 
             cpp_int slave_d = boost::lexical_cast<cpp_int>(kd);
             cpp_int slave_n = boost::lexical_cast<cpp_int>(kn);
 
-            cerr << "ocho" << endl;
+//            cerr << "ocho" << endl;
 
             d = slave_d;
             n = slave_n;
@@ -579,11 +585,17 @@ SUCCESS_PW:
             std::vector<cpp_int> decrypt_stage1_ak = decrypt_full(encrypted_aes_key);
             std::vector<cpp_int> decrypt_stage1_ii = decrypt_full(encrypted_id_info);
 
+            cerr << "Size of decrypt_stage1_ak: " << decrypt_stage1_ak.size() << endl;
+            cerr << "Size of decrypt_stage1_ii: " << decrypt_stage1_ii.size() << endl;
+
             // Unsign
 
             
             std::vector<cpp_int> unsigned_stage2_ak = decrypt_with_other_people_s_public_key_full(decrypt_stage1_ak, master_key_e, master_key_n);
             std::vector<cpp_int> unsigned_stage2_ii = decrypt_with_other_people_s_public_key_full(decrypt_stage1_ii, master_key_e, master_key_n);
+
+            cerr << "Size of unsigned_stage2_ak: " << unsigned_stage2_ak.size() << endl;
+            cerr << "Size of unsigned_stage2_ii: " << unsigned_stage2_ii.size() << endl;
 
             string aes_key_final = "";
             string master_info_final = "";
@@ -591,23 +603,33 @@ SUCCESS_PW:
             cerr << "nueve" << endl;
 
             for (int i = 0; i < (int)unsigned_stage2_ak.size(); i++) {
-                assert(unsigned_stage2_ak[i] > 0 && unsigned_stage2_ak[i] < 256);
+                assert(unsigned_stage2_ak[i] >= 0 && unsigned_stage2_ak[i] < 256);
                 aes_key_final.push_back((char)unsigned_stage2_ak[i]);
             }
+            cerr << "Uno" << endl;
             for (int i = 0; i < (int)unsigned_stage2_ii.size(); i++) {
-                assert(unsigned_stage2_ii[i] > 0 && unsigned_stage2_ii[i] < 256);
+                assert(unsigned_stage2_ii[i] >= 0 && unsigned_stage2_ii[i] < 256);
                 master_info_final.push_back((char)unsigned_stage2_ii[i]);
             }
+            cerr << "Dos" << endl;
 
+            cerr << aes_key_final.size() << endl;
+            cerr << master_info_final.size() << endl;
+
+            cerr << "Tres" << endl;
 
             aes_key_final = depad_inputs(aes_key_final);
             master_info_final = depad_inputs(master_info_final);
 
+            cerr << "cuadro" << endl;
+
             assert(aes_key_final.size() == 32);
             assert(master_info_final.size() == 32);
 
+            cerr << "cinco" << endl;
+
             FILE *important_key_f = fopen("AES_KEY_important.key", "w+");
-            fputs(aes_key_final.c_str(), important_key_f);
+            fputs(B64::encode64(aes_key_final).c_str(), important_key_f);
 
             cerr << "diez" << endl;
 
@@ -623,11 +645,6 @@ SUCCESS_PW:
         }
         case ((int)'k'): {
             cout << "Creating New RSA keys as Slave" << endl << endl;
-//           string mid_name;
-//           do {
-//               cout << "Enter your preferred username (must be 10 characters long): ";
-//               cin >> mid_name;
-//           } while (mid_name.size() != 10);
 
             gen_rsa_k();
 
@@ -662,7 +679,7 @@ SUCCESS_PW:
             // Success for inputting password
             string password = input1;
             string secure_pw_hashed = sha_hash_it(ripemd_hash_it(password));
-            fputs(secure_pw_hashed.c_str(), pass_sto_f);
+            fputs(B64::encode64(secure_pw_hashed).c_str(), pass_sto_f);
 
             string secret = export_private_key() + ";;;";
 
@@ -685,7 +702,7 @@ SUCCESS_PW:
             assert(encrypted_vault_content.size() % 16 == 0);
 //            assert(strlen(encrypted_vault_content.c_str()) % 16 == 0);
 
-            fputs(encrypted_vault_content.c_str(), vault_sto_f);
+            fputs(B64::encode64(encrypted_vault_content).c_str(), vault_sto_f);
 //            exact_fputs(encrypted_vault_content, vault_sto_f);
 
             fputs(export_public_key().c_str(), pub_sto_f);
