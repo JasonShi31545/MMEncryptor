@@ -711,7 +711,7 @@ SUCCESS_PW:
 
             string secret = export_private_key() + ";;;";
 
-            cerr << "secret size: " << secret.size() << endl;
+//            cerr << "secret size: " << secret.size() << endl;
 
             string secret_aes_key = sha_hash_it(sha3_hash_it(password));
             bitset<32 * BYTE_SIZE> secret_aes_key_bin = str_to_bin(secret_aes_key);
@@ -719,13 +719,13 @@ SUCCESS_PW:
 
             string encrypted_secret_content = encrypt_full(process_state(secret), expanded_secret_aes_key);
 
-            cerr << "encrypted secret content size: " << encrypted_secret_content.size() << endl;
+//            cerr << "encrypted secret content size: " << encrypted_secret_content.size() << endl;
 
             string secret_otp_key = sha_hash_it(password);
             string expanded_secret_otp_key = otp_key_expansion(secret_otp_key, encrypted_secret_content.size());
             string encrypted_vault_content = encrypt_otp(encrypted_secret_content, expanded_secret_otp_key);
 
-            cerr << "encrypted vault content: " << encrypted_vault_content.size() << endl;
+//            cerr << "encrypted vault content: " << encrypted_vault_content.size() << endl;
 
             assert(encrypted_vault_content.size() % 16 == 0);
 //            assert(strlen(encrypted_vault_content.c_str()) % 16 == 0);
