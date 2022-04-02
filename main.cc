@@ -221,8 +221,13 @@ int main(int argc, const char *argv[]) {
             const string master_id_info = gen_id_info(mid_name);
             amIMaster = true;
 
+//            cerr << "Master ID: " << master_id_info << endl;
+
             bitset<32 * BYTE_SIZE> aes_key = generate_key();
             string str_aes_key = bin_to_str(aes_key);
+
+//            cerr << "AES key: " << B64::encode64(str_aes_key) << endl;
+
             string padded_aes_key = pad_inputs(str_aes_key);
             string padded_id_info = pad_inputs(master_id_info);
             
@@ -240,7 +245,7 @@ int main(int argc, const char *argv[]) {
 
             string encrypted_info = export_encrypted_message(rsa_encrypted_paesk) + ";;;" + export_encrypted_message(rsa_encrypted_idi);
 
-            fputs(encrypted_info.c_str(),comm_sto_f);
+            fputs(B64::encode64(encrypted_info).c_str(),comm_sto_f);
 
             FILE *pub_sto_f;
             FILE *vault_sto_f;
@@ -378,7 +383,7 @@ SUCCESS_PW:
             string comm_file_content;
 
             // parse_file(comm_file_content, comm_sto_f, false);
-            comm_file_content = readAllFromFile(comm_sto_f);
+            comm_file_content = B64::decode64(readAllFromFile(comm_sto_f));
 //            comm_file_content = clean_up_string(comm_file_content);
             
             string encrypted_aes_key, encrypted_infos;
@@ -388,11 +393,11 @@ SUCCESS_PW:
                     split_index = i+1+1+1;
                     break;
                 } else {
-                    encrypted_aes_key.push_back((char)comm_file_content[i]);
+                    encrypted_aes_key.push_back((unsigned char)comm_file_content[i]);
                 }
             }
             for (int i = split_index; i < (int)(comm_file_content.size()); i++) {
-                encrypted_infos.push_back((char)comm_file_content[i]);
+                encrypted_infos.push_back((unsigned char)comm_file_content[i]);
             }
 
             std::vector<cpp_int> processed_encrypted_aes_k = parse_received_message(encrypted_aes_key);
@@ -478,7 +483,7 @@ SUCCESS_PW:
             // Parse the received communication message mme_aesk.ekey
             string pure_content;
             // parse_file(pure_content, ekey, false);
-            pure_content = readAllFromFile(ekey);
+            pure_content = B64::decode64(readAllFromFile(ekey));
             // pure_content = clean_up_string(pure_content);
 
             std::vector<cpp_int> encrypted_aes_key, encrypted_id_info;
@@ -495,11 +500,20 @@ SUCCESS_PW:
             for (int i = split_index+3; i < (int)pure_content.size(); i++) {
                 idInfoContent.push_back(pure_content[i]);
             }
+
+
+//            cerr << "Pure content size: " << pure_content.size() << endl;
+//            cerr << "AES content size: " << aesContent.size() << endl;
+//            cerr << "ID INFO content size: " << idInfoContent.size() << endl;
+
             
-            cerr << "1" << endl;
+//            cerr << "1" << endl;
             encrypted_aes_key = parse_received_message(aesContent);
-            cerr << "2" << endl;
+//            cerr << "2" << endl;
             encrypted_id_info = parse_received_message(idInfoContent);
+
+//            cerr << "ENCRYPTED AES KEY size: " << encrypted_aes_key.size() << endl;
+//            cerr << "ENCRYPTED ID INFO size: " << encrypted_id_info.size() << endl;
 
             // Parse operation is completed
 
@@ -533,9 +547,9 @@ SUCCESS_PW:
 
 //            cerr << "Stage 1 size: " << stage1.size() << endl;
 
-            string stage2 = decrypt_full(stage1, exp_ak);
+            string stage2 = unprocess_state(decrypt_full(stage1, exp_ak));
 //            cerr << "cuadro" << endl;
-
+//
             string private_keys = "";
             for (int i = 0; i < (int)stage2.size() - 3; i++) {
                 if (stage2.substr(i, 3) == ";;;") {
@@ -545,6 +559,8 @@ SUCCESS_PW:
                 }
             }
 
+            assert(private_keys.size() == stage2.size() - 3);
+
 //            cerr << "cinco" << endl;
 
             string kd, kn;
@@ -552,6 +568,7 @@ SUCCESS_PW:
             for (int i = 0; i < (int)private_keys.size(); i++) {
                 if (private_keys[i] == ',') {
                     break_id = i+1;
+                    break;
                 } else {
                     kd.push_back(private_keys[i]);
                 }
@@ -561,8 +578,8 @@ SUCCESS_PW:
             }
 
 
-//	    cerr << "Pure KD: " << kd << endl;
-//	    cerr << "Pure KN: " << kn << endl;
+//    	    cerr << "Pure KD: " << kd << endl;
+//            cerr << "Pure KN: " << kn << endl;
 
 //            cerr << "seis" << endl;
 
@@ -582,11 +599,13 @@ SUCCESS_PW:
             d = slave_d;
             n = slave_n;
 
+//            cerr << d << "-------------" << n << endl << endl;
+
             std::vector<cpp_int> decrypt_stage1_ak = decrypt_full(encrypted_aes_key);
             std::vector<cpp_int> decrypt_stage1_ii = decrypt_full(encrypted_id_info);
 
-            cerr << "Size of decrypt_stage1_ak: " << decrypt_stage1_ak.size() << endl;
-            cerr << "Size of decrypt_stage1_ii: " << decrypt_stage1_ii.size() << endl;
+//            cerr << "Size of decrypt_stage1_ak: " << decrypt_stage1_ak.size() << endl;
+//            cerr << "Size of decrypt_stage1_ii: " << decrypt_stage1_ii.size() << endl;
 
             // Unsign
 
@@ -594,47 +613,55 @@ SUCCESS_PW:
             std::vector<cpp_int> unsigned_stage2_ak = decrypt_with_other_people_s_public_key_full(decrypt_stage1_ak, master_key_e, master_key_n);
             std::vector<cpp_int> unsigned_stage2_ii = decrypt_with_other_people_s_public_key_full(decrypt_stage1_ii, master_key_e, master_key_n);
 
-            cerr << "Size of unsigned_stage2_ak: " << unsigned_stage2_ak.size() << endl;
-            cerr << "Size of unsigned_stage2_ii: " << unsigned_stage2_ii.size() << endl;
+//            cerr << "Size of unsigned_stage2_ak: " << unsigned_stage2_ak.size() << endl;
+//            cerr << "Size of unsigned_stage2_ii: " << unsigned_stage2_ii.size() << endl;
 
             string aes_key_final = "";
             string master_info_final = "";
 
-            cerr << "nueve" << endl;
+//            cerr << "nueve" << endl;
 
             for (int i = 0; i < (int)unsigned_stage2_ak.size(); i++) {
-                assert(unsigned_stage2_ak[i] >= 0 && unsigned_stage2_ak[i] < 256);
-                aes_key_final.push_back((char)unsigned_stage2_ak[i]);
+//                assert(unsigned_stage2_ak[i] >= 0 && unsigned_stage2_ak[i] < 256);
+                aes_key_final.push_back((unsigned char)unsigned_stage2_ak[i]);
             }
-            cerr << "Uno" << endl;
+//            cerr << "Uno" << endl;
             for (int i = 0; i < (int)unsigned_stage2_ii.size(); i++) {
-                assert(unsigned_stage2_ii[i] >= 0 && unsigned_stage2_ii[i] < 256);
-                master_info_final.push_back((char)unsigned_stage2_ii[i]);
+//                assert(unsigned_stage2_ii[i] >= 0 && unsigned_stage2_ii[i] < 256);
+                master_info_final.push_back((unsigned char)unsigned_stage2_ii[i]);
             }
-            cerr << "Dos" << endl;
+
+//            cerr << "AES Key Final: " << aes_key_final << endl;
+//            cerr << "Master Info Final: " << master_info_final << endl;
+
+//            cerr << "Dos" << endl;
 
             cerr << aes_key_final.size() << endl;
             cerr << master_info_final.size() << endl;
 
-            cerr << "Tres" << endl;
+//            cerr << "Tres" << endl;
 
             aes_key_final = depad_inputs(aes_key_final);
             master_info_final = depad_inputs(master_info_final);
 
-            cerr << "cuadro" << endl;
+//            cerr << "cuadro" << endl;
 
             assert(aes_key_final.size() == 32);
             assert(master_info_final.size() == 32);
 
-            cerr << "cinco" << endl;
+//            cerr << "cinco" << endl;
 
             FILE *important_key_f = fopen("AES_KEY_important.key", "w+");
             fputs(B64::encode64(aes_key_final).c_str(), important_key_f);
 
-            cerr << "diez" << endl;
-
+//            cerr << "diez" << endl;
 
             // TODO verify master info
+            //
+            cout << "Master Info: " << master_info_final << endl;
+
+            string check_master_str = "MMEV XXXXXXXHN: " + expected_master_name + " ++END";
+            cout << ((check_master_str == master_info_final) ? "MASTER VERIFIED" : "MASTER INFO INCONSISTENT") << endl;
 
 
             fclose(important_key_f);
@@ -642,6 +669,7 @@ SUCCESS_PW:
             fclose(pass_file);
             fclose(ekey);
             fclose(master_pubkey);
+            break;
         }
         case ((int)'k'): {
             cout << "Creating New RSA keys as Slave" << endl << endl;
@@ -670,8 +698,8 @@ SUCCESS_PW:
                 cout << endl;
                 if (input1 != input2) {
                     errnum = errno;
-                    fprintf(stderr, "Password Confirmation failed");
-                    fprintf(stderr, "Try again");
+                    fprintf(stderr, "Password Confirmation failed\n");
+                    fprintf(stderr, "Try again\n");
                     return -5;
                 }
             }

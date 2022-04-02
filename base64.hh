@@ -132,7 +132,7 @@ namespace B64 {
         for (int i = 0; i < (int)binaries.size() / 8; i++) {
             int prechar = bin_to_int(binaries.substr(i*8, 8));
             assert(prechar >= 0 && prechar <= 255);
-            result.push_back((char)prechar);
+            result.push_back((unsigned char)prechar);
         }
         return result;
     }

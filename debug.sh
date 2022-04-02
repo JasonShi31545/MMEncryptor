@@ -8,7 +8,7 @@ then
     ./mme.out -p;
     ./mme.out -b;
     ./mme.out -m;
-    ./mme.out -b;
+#    ./mme.out -b;
     ./mme.out -a;
 else
     make final;

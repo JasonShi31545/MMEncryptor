@@ -16,6 +16,17 @@ string process_state(const string _state) {
     return state;
 }
 
+string unprocess_state(const string _state) {
+    string state = _state;
+//    assert(state.size() % 16 == 0);
+    int i = state.size() - 1;
+    while (state[i] == ' ') {
+        state.erase(state.begin() + i);
+        i--;
+    }
+    return state;
+}
+
 string encrypt(const string state, string ek) {
     assert(state.size() == 16);
     string ct;

@@ -111,6 +111,30 @@ int main(void) {
 
     */
 
+    init();
+
+    /*
+    string aesk = "ABCDEFGHIJKLMNOPQRSTUVWXYZABCDEF";
+    string expaesk = expand_key(str_to_bin(aesk));
+    string content = "Arouse out from out the azure main, arouse arouse!";
+    assert(content.size() % 16 != 0);
+
+    string aes_encrypted = encrypt_full(process_state(content), expaesk);
+    string decrypted = decrypt_full(process_state(content), expaesk);
+    cout << "Decrypted size: " << decrypted.size() << endl;
+    cout << "Original size: " << content.size() << endl;
+    cout << "Unprocessed size: " << unprocess_state(content).size() << endl;
+
+    string otpk = "12345678901234567890123456789012";
+    string expotpk = otp_key_expansion(otpk, content.size());
+    string encrypted_final = encrypt_otp(content, expotpk);
+    string decrypted_ = decrypt_otp(content, expotpk);
+    cout << "Original (otp) size: " << content.size() << endl;
+    cout << "Decrypted (otp) size: " << decrypted_.size() << endl;
+    */
+
+
+
     /*
 
     gen_rsa_k();
@@ -211,8 +235,12 @@ int main(void) {
     cout << license_content;
     */
 
+    /*
     cpp_int a = 51;
     cout << (char)a << endl;
+    */
+
+
 
     return 0;
 }
