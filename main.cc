@@ -656,7 +656,7 @@ SUCCESS_PW:
 
 //            cerr << "diez" << endl;
 
-            // TODO verify master info
+            // Verify master info
             //
             cout << "Master Info: " << master_info_final << endl;
 
@@ -744,12 +744,113 @@ SUCCESS_PW:
         }
         case ((int)'e'): {
             // assume that either AES_KEY_important.key or vault.sto is present
-            
+            FILE *akifile = fopen("AES_KEY_important.key", "r");
+            FILE *vaultfile = fopen("vault.sto", "r");
+            if (vaultfile == NULL || vaultfile == nullptr) {
+                // slave
+                // AES_KEY_important.key has the encryption key
+                if (akifile == NULL || akifile == nullptr) {
+                    cerr << "No file found" << endl;
+                    return -5;
+                }
+                FILE *targetFile = fopen(argv[2], "r");
+                if (targetFile == nullptr || targetFile == NULL) {
+                    cerr << "No file passed as argument" << endl;
+                    return -6;
+                }
+
+                string aes_key = B64::decode64(readAllFromFile(akifile));
+                bitset<32 * BYTE_SIZE> aes_key_bin = str_to_bin(aes_key);
+                string expanded_key = expand_key(aes_key_bin);
+                string fileContent = readAllFromFile(targetFile);
+                fileContent = encrypt_full(process_state(fileContent), expanded_key);
+
+                string filename(argv[2]);
+                filename += ".mmee";
+
+                FILE *resultFile = fopen(filename.c_str(), "w");
+                fputs(fileContent.c_str(), resultFile);
+
+                fclose(resultFile);
+                fclose(targetFile);
+                fclose(akifile);
+            } else {
+                // master
+                // vault.sto has the encryption key
+                if (vaultfile == NULL || vaultfile == nullptr) {
+                    cerr << "No file found" << endl;
+                    return -5;
+                }
+                // ask for password
+                string vaultContent = B64::decode64(readAllFromFile(vaultfile));
+
+                string input1;
+                while (input1.size() < 8) {
+                    cout << "Enter your vault password: ";
+                    input1 = PASSWORD_INPUT::getpass2();
+                    cout << endl;
+                }
+                string hashed = sha_hash_it(ripemd_hash_it(input1));
+
+                // read from pass.sto
+
+                FILE *pass_file = fopen("pass.sto", "r");
+                if (pass_file == nullptr) {
+                    cerr << "Error: Password file does not exist!" << endl;
+                    return 5;
+                }
+                string supposed_hash;
+                // parse_file(supposed_hash, pass_file, false);
+                supposed_hash = B64::decode64(readAllFromFile(pass_file));
+                if (supposed_hash == hashed) {
+                    cerr << "Verification Successful!" << endl;
+                } else {
+                    cerr << "Verification Failed!" << endl;
+                    return 6;
+                }
+                fclose(pass_file);
+
+                // TODO: Finish shit
+
+
+
+            }
             break;
         }
         case ((int)'d'): {
             // assume that either AES_KEY_important.key or vault.sto is present
             
+            FILE *akifile = fopen("AES_KEY_important.key", "r");
+            FILE *vaultfile = fopen("vault.sto", "r");
+            if (vaultfile == NULL || vaultfile == nullptr) {
+                 if (akifile == NULL || akifile == nullptr) {
+                    cerr << "No file found" << endl;
+                    return -5;
+                }
+                FILE *targetFile = fopen(argv[2], "r");
+                if (targetFile == nullptr || targetFile == NULL) {
+                    cerr << "No file passed as argument" << endl;
+                    return -6;
+                }
+
+                string aes_key = B64::decode64(readAllFromFile(akifile));
+                bitset<32 * BYTE_SIZE> aes_key_bin = str_to_bin(aes_key);
+                string expanded_key = expand_key(aes_key_bin);
+                string fileContent = readAllFromFile(targetFile);
+                fileContent = unprocess_state(decrypt_full(process_state(fileContent), expanded_key));
+
+                string filename(argv[2]);
+                filename += ".mmed";
+
+                FILE *resultFile = fopen(filename.c_str(), "w");
+                fputs(fileContent.c_str(), resultFile);
+                fclose(resultFile);
+                fclose(targetFile);
+                fclose(akifile);
+                
+            } else {
+            }
+
             break;
         }
         case ((int)'x'): {
