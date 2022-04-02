@@ -2,6 +2,7 @@
 #define MAIN_HH
 
 
+/*
 string clean_up_string(string input) {
     string result = "";
     for (int i = 0; i < (int)input.size(); i++) {
@@ -15,6 +16,7 @@ string clean_up_string(string input) {
     }
     return result;
 }
+*/
 
 std::string readAllFromFile(FILE *fff) {
     std::string result = "";
