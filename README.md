@@ -6,6 +6,7 @@ A command line client for RSA and AES message encryption. Reads and creates keys
 
 ## Build dependencies
 
+<!--
 [//]: # (Depending on each version of Linux, the packages are named differently)
 [//]: # (### Linux)
 [//]: # (* libboost-random-dev (1.74.0.3 or above)
@@ -13,6 +14,7 @@ A command line client for RSA and AES message encryption. Reads and creates keys
 [//]: # (* libssl-dev (1.1.1 or above)
 [//]: # (* libgmp-dev (6.2.1 or above)
 [//]: # (* libcrypto++-dev (8.4 or above)
+-->
 
 ### Linux
 
