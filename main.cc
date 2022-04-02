@@ -769,7 +769,7 @@ SUCCESS_PW:
                 filename += ".mmee";
 
                 FILE *resultFile = fopen(filename.c_str(), "w");
-                fputs(fileContent.c_str(), resultFile);
+                fputs(B64::encode64(fileContent).c_str(), resultFile);
 
                 fclose(resultFile);
                 fclose(targetFile);
@@ -781,6 +781,14 @@ SUCCESS_PW:
                     cerr << "No file found" << endl;
                     return -5;
                 }
+
+                FILE *targetFile = fopen(argv[2], "r");
+                if (targetFile == nullptr || targetFile == NULL) {
+                    cerr << "No file passed as argument" << endl;
+                    return -6;
+                }
+
+
                 // ask for password
                 string vaultContent = B64::decode64(readAllFromFile(vaultfile));
 
@@ -810,10 +818,47 @@ SUCCESS_PW:
                 }
                 fclose(pass_file);
 
-                // TODO: Finish shit
 
 
 
+                string aes_key = sha_hash_it(sha3_hash_it(input1));
+                bitset<32 * BYTE_SIZE> aes_key_bin = str_to_bin(aes_key);
+                string expanded_aes_key = expand_key(aes_key_bin);
+                string otp_key = sha_hash_it(input1);
+                string expanded_otp_key = otp_key_expansion(otp_key, vaultContent.size());
+                string decryptedFile = decrypt_otp(vaultContent, expanded_otp_key);
+                string more_decrypted_file = unprocess_state(decrypt_full(process_state(decryptedFile), expanded_aes_key));
+                // find ;;;
+                int breaker_index = -1;
+                for (int i = 0; i < (int)more_decrypted_file.size() - 3; i++) {
+                    if (more_decrypted_file.substr(i, 3) == ";;;") {
+                        breaker_index = i + 3;
+                        break;
+                    }
+                }
+                if (breaker_index == -1) {
+                    cerr << "Things are fucked" << endl;
+                    return -20;
+                }
+                string the_real_aes_key = "";
+                for (int i = breaker_index; i < (int)more_decrypted_file.size(); i++) { the_real_aes_key.push_back(more_decrypted_file[i]); }
+
+
+                bitset<32 * BYTE_SIZE> traesk = str_to_bin(the_real_aes_key);
+                string trexpanded_key = expand_key(traesk);
+                string fileContent = readAllFromFile(targetFile);
+                fileContent = encrypt_full(process_state(fileContent), trexpanded_key);
+
+                string filename(argv[2]);
+                filename += ".mmee";
+
+                FILE *resultFile = fopen(filename.c_str(), "w");
+
+                fputs(B64::encode64(fileContent).c_str(), resultFile);
+
+                fclose(resultFile);
+                fclose(targetFile);
+                fclose(vaultfile);
             }
             break;
         }
@@ -836,7 +881,7 @@ SUCCESS_PW:
                 string aes_key = B64::decode64(readAllFromFile(akifile));
                 bitset<32 * BYTE_SIZE> aes_key_bin = str_to_bin(aes_key);
                 string expanded_key = expand_key(aes_key_bin);
-                string fileContent = readAllFromFile(targetFile);
+                string fileContent = B64::decode64(readAllFromFile(targetFile));
                 fileContent = unprocess_state(decrypt_full(process_state(fileContent), expanded_key));
 
                 string filename(argv[2]);
@@ -849,14 +894,120 @@ SUCCESS_PW:
                 fclose(akifile);
                 
             } else {
+
+                if (vaultfile == NULL || vaultfile == nullptr) {
+                    cerr << "No file found" << endl;
+                    return -5;
+                }
+
+                FILE *targetFile = fopen(argv[2], "r");
+                if (targetFile == nullptr || targetFile == NULL) {
+                    cerr << "No file passed as argument" << endl;
+                    return -6;
+                }
+
+
+                // ask for password
+                string vaultContent = B64::decode64(readAllFromFile(vaultfile));
+
+                string input1;
+                while (input1.size() < 8) {
+                    cout << "Enter your vault password: ";
+                    input1 = PASSWORD_INPUT::getpass2();
+                    cout << endl;
+                }
+                string hashed = sha_hash_it(ripemd_hash_it(input1));
+
+                // read from pass.sto
+
+                FILE *pass_file = fopen("pass.sto", "r");
+                if (pass_file == nullptr) {
+                    cerr << "Error: Password file does not exist!" << endl;
+                    return 5;
+                }
+                string supposed_hash;
+                // parse_file(supposed_hash, pass_file, false);
+                supposed_hash = B64::decode64(readAllFromFile(pass_file));
+                if (supposed_hash == hashed) {
+                    cerr << "Verification Successful!" << endl;
+                } else {
+                    cerr << "Verification Failed!" << endl;
+                    return 6;
+                }
+                fclose(pass_file);
+
+
+
+
+                string aes_key = sha_hash_it(sha3_hash_it(input1));
+                bitset<32 * BYTE_SIZE> aes_key_bin = str_to_bin(aes_key);
+                string expanded_aes_key = expand_key(aes_key_bin);
+                string otp_key = sha_hash_it(input1);
+                string expanded_otp_key = otp_key_expansion(otp_key, vaultContent.size());
+                string decryptedFile = decrypt_otp(vaultContent, expanded_otp_key);
+                string more_decrypted_file = unprocess_state(decrypt_full(process_state(decryptedFile), expanded_aes_key));
+                // find ;;;
+                int breaker_index = -1;
+                for (int i = 0; i < (int)more_decrypted_file.size() - 3; i++) {
+                    if (more_decrypted_file.substr(i, 3) == ";;;") {
+                        breaker_index = i + 3;
+                        break;
+                    }
+                }
+                if (breaker_index == -1) {
+                    cerr << "Things are fucked" << endl;
+                    return -20;
+                }
+                string the_real_aes_key = "";
+                for (int i = breaker_index; i < (int)more_decrypted_file.size(); i++) { the_real_aes_key.push_back(more_decrypted_file[i]); }
+
+
+                bitset<32 * BYTE_SIZE> traesk = str_to_bin(the_real_aes_key);
+                string trexpanded_key = expand_key(traesk);
+                string fileContent = B64::decode64(readAllFromFile(targetFile));
+                fileContent = unprocess_state(decrypt_full(process_state(fileContent), trexpanded_key));
+
+                string filename(argv[2]);
+                filename += ".mmed";
+
+                FILE *resultFile = fopen(filename.c_str(), "w");
+                fputs(fileContent.c_str(), resultFile);
+                fclose(resultFile);
+                fclose(targetFile);
+                fclose(vaultfile);
             }
 
             break;
         }
         case ((int)'x'): {
+            FILE *slave_pubf = fopen("slave_pub.sto", "r");
+            FILE *master_pubf = fopen("pub.sto", "r");
+            if (slave_pubf == NULL) {
+                string inside = readAllFromFile(slave_pubf);
+                cout << inside << endl;
+                fclose(slave_pubf);
+            } else {
+                if (master_pubf == NULL) {
+                    cerr << "No available files and information" << endl;
+                    return -5;
+                }
+                string inside = readAllFromFile(master_pubf);
+                cout << inside << endl;
+                fclose(master_pubf);
+            }
             break;
         }
         case ((int)'i'): {
+            if (fopen("vault.sto", "r") != NULL) {
+                cout << "Master operations" << endl;
+                return 0;
+            } else if (fopen("AES_KEY_important.key", "r") != NULL) {
+                cout << "Completed Transaction Slave Operation" << endl;
+                return 0;
+            } else {
+                cout << "No completed exchange operations" << endl;
+                return 0;
+            }
             break;
         }
         case ((int)'o'): {
