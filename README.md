@@ -6,12 +6,17 @@ A command line client for RSA and AES message encryption. Reads and creates keys
 
 ## Build dependencies
 
+[//]: # (Depending on each version of Linux, the packages are named differently)
+[//]: # ### Linux
+[//]: # * libboost-random-dev (1.74.0.3 or above)
+[//]: # * libboost-thread-dev (1.74.0.3 or above)
+[//]: # * libssl-dev (1.1.1 or above)
+[//]: # * libgmp-dev (6.2.1 or above)
+[//]: # * libcrypto++-dev (8.4 or above) See [CRYPTOPP.md](./CRYPTOPP.md)
+
 ### Linux
-* libboost-random-dev (1.74.0.3 or above)
-* libboost-thread-dev (1.74.0.3 or above)
-* libssl-dev (1.1.1 or above)
-* libgmp-dev (6.2.1 or above)
-* libcrypto++-dev (8.4 or above) See [CRYPTOPP.md](./CRYPTOPP.md)
+
+Different distributions named and contain their packages differently. Make sure the boost library is installed with random and threading as additional dependencies. Make sure every package is development enabled and statically-linkable. You will need the SSL (or OpenSSL) libraries, the GMP libraries, the Crypto++ libraries as dependencies. Its better to statically compile the Crypto++ library from source to prevent any problems with staitc links.
 
 #### Windows Binary from Linux
 
