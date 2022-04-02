@@ -983,17 +983,17 @@ SUCCESS_PW:
             FILE *slave_pubf = fopen("slave_pub.sto", "r");
             FILE *master_pubf = fopen("pub.sto", "r");
             if (slave_pubf == NULL) {
-                string inside = readAllFromFile(slave_pubf);
-                cout << inside << endl;
-                fclose(slave_pubf);
-            } else {
-                if (master_pubf == NULL) {
-                    cerr << "No available files and information" << endl;
-                    return -5;
-                }
                 string inside = readAllFromFile(master_pubf);
                 cout << inside << endl;
                 fclose(master_pubf);
+            } else {
+                if (slave_pubf == NULL) {
+                    cerr << "No available files and information" << endl;
+                    return -5;
+                }
+                string inside = readAllFromFile(slave_pubf);
+                cout << inside << endl;
+                fclose(slave_pubf);
             }
             break;
         }
