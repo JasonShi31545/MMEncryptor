@@ -19,10 +19,13 @@ A command line client for RSA and AES message encryption. Reads and creates keys
 ### Linux
 
 Different distributions named and contain their packages differently. 
+
 Make sure every package is development enabled and statically-linkable. 
 
 Make sure the boost library is installed with random and threading as additional dependencies. 
+
 You will need the SSL (or OpenSSL) libraries, the GMP libraries, the Crypto++ libraries as dependencies. 
+
 Its better to statically compile the Crypto++ library from source to prevent any problems with staitc links.
 
 #### Windows Binary from Linux
