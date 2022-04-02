@@ -26,7 +26,7 @@ Make sure the boost library is installed with random and threading as additional
 
 You will need the SSL (or OpenSSL) libraries, the GMP libraries, the Crypto++ libraries as dependencies. 
 
-Its better to statically compile the Crypto++ library from source to prevent any problems with staitc links. (See More in: [./CRYPTOPP.md](this document))
+Its better to statically compile the Crypto++ library from source to prevent any problems with staitc links. (See More in: <a href="./CRYPTOPP.md">this document</a>)
 
 #### Windows Binary from Linux
 
