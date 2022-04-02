@@ -636,8 +636,8 @@ SUCCESS_PW:
 
 //            cerr << "Dos" << endl;
 
-            cerr << aes_key_final.size() << endl;
-            cerr << master_info_final.size() << endl;
+//            cerr << aes_key_final.size() << endl;
+//            cerr << master_info_final.size() << endl;
 
 //            cerr << "Tres" << endl;
 
