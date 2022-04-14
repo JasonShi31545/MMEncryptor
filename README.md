@@ -18,7 +18,7 @@ A command line client for RSA and AES message encryption. Reads and creates keys
 
 ### Linux
 
-Different distributions named and contain their packages differently. 
+Different distributions name and document their packages differently. 
 
 Make sure every package is development enabled and statically-linkable. 
 
