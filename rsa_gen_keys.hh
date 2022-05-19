@@ -12,10 +12,11 @@ using namespace boost::math;
 
 cpp_int _p,q,n,phi,d,e_; // _p to avoid name collision, e_ to avoid name collision
 
+/*
 void initialize_primes(cpp_int &a, cpp_int &b, const cpp_int k) {
     
     assert(k > 0);
-    boost::random::independent_bits_engine<boost::random::random_device, 4096, cpp_int> gen;
+    boost::random::independent_bits_engine<boost::random::random_device, 2048, cpp_int> gen;
 
     for (int i = 0; i < 2; i++) {
         while (1) {
@@ -37,10 +38,10 @@ void initialize_primes(cpp_int &a, cpp_int &b, const cpp_int k) {
     }
 
 }
-/*
+*/
 void initialize_primes(cpp_int &a, cpp_int &b, const cpp_int k) {
     assert(k > 0);
-    boost::random::independent_bits_engine<boost::random::random_device, 4096, cpp_int> genp;
+    boost::random::independent_bits_engine<boost::random::random_device, 1024, cpp_int> genp;
     boost::random::independent_bits_engine<boost::random::random_device, 3072, cpp_int> genq;
     while (1) {
         cpp_int r = genp();
@@ -61,7 +62,6 @@ void initialize_primes(cpp_int &a, cpp_int &b, const cpp_int k) {
         }
     }
 }
-*/
 
 void initialize_e(cpp_int &__e, const cpp_int k) {
     
