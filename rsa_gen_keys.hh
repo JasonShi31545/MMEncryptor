@@ -15,7 +15,7 @@ cpp_int _p,q,n,phi,d,e_; // _p to avoid name collision, e_ to avoid name collisi
 void initialize_primes(cpp_int &a, cpp_int &b, const cpp_int k) {
     
     assert(k > 0);
-    boost::random::independent_bits_engine<boost::random::random_device, 2048, cpp_int> gen;
+    boost::random::independent_bits_engine<boost::random::random_device, 4096, cpp_int> gen;
 
     for (int i = 0; i < 2; i++) {
         while (1) {
@@ -37,13 +37,38 @@ void initialize_primes(cpp_int &a, cpp_int &b, const cpp_int k) {
     }
 
 }
+/*
+void initialize_primes(cpp_int &a, cpp_int &b, const cpp_int k) {
+    assert(k > 0);
+    boost::random::independent_bits_engine<boost::random::random_device, 4096, cpp_int> genp;
+    boost::random::independent_bits_engine<boost::random::random_device, 3072, cpp_int> genq;
+    while (1) {
+        cpp_int r = genp();
+        if (check_sieve(r)) {
+            if (isPrime(r,k)) {
+                a = r;
+                break;
+            }
+        }
+    }
+    while (1) {
+        cpp_int r = genq();
+        if (check_sieve(r)) {
+            if (isPrime(r,k)) {
+                b = r;
+                break;
+            }
+        }
+    }
+}
+*/
 
 void initialize_e(cpp_int &__e, const cpp_int k) {
     
     assert(phi > 0);
     assert(n > 0);
     assert(k > 0);
-    boost::random::independent_bits_engine<boost::random::random_device, 2148, cpp_int> gen_e;
+    boost::random::independent_bits_engine<boost::random::random_device, 4148, cpp_int> gen_e;
     
     __e = 0;
     while (__e < _p || __e < q || (__e >= phi)) { // if any of these undesirable conditions are true, continue to find primes
