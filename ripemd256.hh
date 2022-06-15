@@ -9,7 +9,7 @@
 #include "ripemd.h"
 #include "hex.h"
 #include "files.h"
-#include <cryptopp/sha.h> 
+//#include <cryptopp/sha.h> 
 #include <iostream>
 
 std::string ripemd_hash_it(std::string msg) {
