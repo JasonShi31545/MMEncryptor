@@ -28,18 +28,9 @@ You will need the SSL (or OpenSSL) libraries, the GMP libraries, the Crypto++ li
 
 Its better to statically compile the Crypto++ library from source to prevent any problems with staitc links. (See More in: <a href="./CRYPTOPP.md">this document</a>)
 
-#### Windows Binary from Linux
-
-For building binaries for Windows, along with the above mentioned Linux dependencies, you would also need:
-
-* mingw compiler suite: mingw-w64
-
 # Instructions to Build
 
 type ```make final``` in the source directory
-
-
-```mme.out``` or ```mme.exe``` should be compiled and linked in the source directory.
 
 # Other Information
 
