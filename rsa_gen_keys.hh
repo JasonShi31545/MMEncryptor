@@ -68,7 +68,7 @@ void initialize_e(cpp_int &__e, const cpp_int k) {
     assert(phi > 0);
     assert(n > 0);
     assert(k > 0);
-    boost::random::independent_bits_engine<boost::random::random_device, 4148, cpp_int> gen_e;
+    boost::random::independent_bits_engine<boost::random::random_device, 3372, cpp_int> gen_e;
     
     __e = 0;
     while (__e < _p || __e < q || (__e >= phi)) { // if any of these undesirable conditions are true, continue to find primes
@@ -160,8 +160,10 @@ void gen_rsa_k() {
     init_psl();
     cpp_int k = 6; // certainty of primality
 
+
     prime_generator();
     trim_prime_sieve_list();
+
     initialize_primes(_p, q, k);
     n = _p * q;
     phi = (_p - 1) * (q - 1);
