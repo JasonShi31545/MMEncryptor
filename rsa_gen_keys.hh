@@ -41,7 +41,7 @@ void initialize_primes(cpp_int &a, cpp_int &b, const cpp_int k) {
 */
 void initialize_primes(cpp_int &a, cpp_int &b, const cpp_int k) {
     assert(k > 0);
-    boost::random::independent_bits_engine<boost::random::random_device, 1024, cpp_int> genp;
+    boost::random::independent_bits_engine<boost::random::random_device, 2048, cpp_int> genp;
     boost::random::independent_bits_engine<boost::random::random_device, 3072, cpp_int> genq;
     while (1) {
         cpp_int r = genp();
@@ -68,7 +68,7 @@ void initialize_e(cpp_int &__e, const cpp_int k) {
     assert(phi > 0);
     assert(n > 0);
     assert(k > 0);
-    boost::random::independent_bits_engine<boost::random::random_device, 3372, cpp_int> gen_e;
+    boost::random::independent_bits_engine<boost::random::random_device, 3572, cpp_int> gen_e;
     
     __e = 0;
     while (__e < _p || __e < q || (__e >= phi)) { // if any of these undesirable conditions are true, continue to find primes
