@@ -97,7 +97,7 @@ std::string int_to_bin(int _ip, const int ts = 8) {
     unsigned long ip = _ip; // in case negative
     if (_ip < 0) {
         ip = (unsigned long)(void *)_ip;
-        bitset<8 * BYTE_SIZE> b;
+        std::bitset<8 * BYTE_SIZE> b;
         b.reset();
         for (int i = 0; i < ts; i++) {
             b.set(i);
