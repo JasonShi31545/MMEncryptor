@@ -91,7 +91,37 @@ std::string int_to_hex(int input) {
     assert(result.size() == 2);
     return result;
 }
+std::string int_to_bin(int _ip, const int ts = 8) {
+    assert(ts <= 32);
+    std::string res;
+    unsigned long ip = _ip; // in case negative
+    if (_ip < 0) {
+        ip = (unsigned long)(void *)_ip;
+        bitset<8 * BYTE_SIZE> b;
+        b.reset();
+        for (int i = 0; i < ts; i++) {
+            b.set(i);
+        }
+        ip = (ip & b.to_ulong());
+    }
 
+    while (ip > 0) {
+        int _digit = (int)(ip % 2);
+        ip >>= 1;
+        char digit = _digit + '0';
+        res.insert(res.begin(), digit);
+    }
+
+    if ((int)res.size() < ts) {
+        int count = ts - res.size();
+        for (int i = 0; i < count; i++) {
+            res.insert(res.begin(), '0');
+        }
+    }
+    return res;
+}
+
+/*
 std::string int_to_bin(int _input, const int targeted_size = 8) {
     std::string result;
     int input = _input;
@@ -120,6 +150,7 @@ std::string int_to_bin(int _input, const int targeted_size = 8) {
 
     return result;
 }
+*/
 int hex_to_int(std::string hex_val) {
     assert(hex_val.size() == 2);
     int result = 0;
