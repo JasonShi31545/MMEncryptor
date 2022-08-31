@@ -44,3 +44,4 @@ tmp/
 *.bak
 
 github_access_token.txt
+.vscode/c_cpp_properties.json
