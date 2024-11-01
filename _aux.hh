@@ -2,6 +2,8 @@
 #define AUX_HH
 
 #include <iostream>
+#include <fstream>
+#include <filesystem>
 #include <string>
 #include <vector>
 #include <bitset>

@@ -1,7 +1,6 @@
 #ifndef MAIN_HH
 #define MAIN_HH
 
-
 /*
 string clean_up_string(string input) {
     string result = "";
@@ -18,23 +17,32 @@ string clean_up_string(string input) {
 }
 */
 
-std::string readAllFromFile(FILE *fff) {
-    std::string result = "";
-    char ch;
-    if (fff == NULL || fff == nullptr) {
-        throw "File cannot be opened";
-    }
 
-    ch = fgetc(fff);
-    while (ch != EOF) {
-        result.push_back(ch);
-        ch = fgetc(fff);
-    }
-    // fclose(fff);
 
-    return result;
-    
+std::vector<char> readAllFromFile(const char *filepath) {
+    // check exists
+    std::cerr << "Filepath: " << filepath << std::endl;
+    FILE *f = fopen(filepath, "r");
+    if (f == NULL) return (std::vector<char>){};
+    fclose(f);
+
+    std::filesystem::path p(filepath);
+    std::vector<char> res;
+    std::ifstream ifs(std::filesystem::absolute(p), std::ios::binary);
+    assert(ifs);
+
+    res = std::vector<char>(std::istreambuf_iterator<char>(ifs), std::istreambuf_iterator<char>());
+    // // std::for_each(res.begin(), res.end(), [](char c) { std::cout << c; });
+    // // std::cin.get();
+
+    return res;
 }
+
+std::string readFileToString(std::vector<char> f) {
+    std::string str(f.begin(), f.end());
+    return str;
+}
+
 std::pair<std::string, std::string> splitAtComma(string input) {
     string a = "", b = "";
     bool toggleComma = false;
