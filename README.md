@@ -1,5 +1,13 @@
 # MMEncryptor
 
+## NOTE
+
+**THIS PROJECT IS DEPRECATED. A NEW VERSION WILL BE WRITTEN AND RELEASE SOON ON GITHUB...**
+
+
+
+
+
 Multimedia Encryptor is an encrypted communication program written completely from scratch (with some specific functions from Crypto++)
 
 A command line client for RSA and AES message encryption. Reads and creates keys and use sophisticated cipher systems to ensure security
